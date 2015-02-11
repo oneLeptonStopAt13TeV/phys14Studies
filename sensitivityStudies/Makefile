@@ -10,12 +10,12 @@ CXX           = g++
 CXXFLAGS      = -std=c++0x
 CXXFLAGS     += -O -Wall -fPIC $(DEFINES) -Wno-unused-result -Wshadow
 CXXFLAGS     += $(ROOTCFLAGS) -I./
-CXXFLAGS     += -I../sonicScrewdriver/
+CXXFLAGS     += -I../../sonicScrewdriver/
 
 LD            = g++ 
 LDFLAGS       = -g -O -Wall -fPIC -Wl,-undefined,error
 LDFLAGS      += $(ROOTLIBS)  -lEG -lTMVA 
-LDFLAGS      += -L `pwd`/../sonicScrewdriver/ -lSonicScrewdriver
+LDFLAGS      += -L `pwd`/../../sonicScrewdriver/ -lSonicScrewdriver
 
 SOFLAGS       = -shared
 LIBS          =  
@@ -33,7 +33,7 @@ LOGS          = $(SOURCES:.$(SrcSuf)=.$(LogSuf))
 
 #------------------------------------------------------------------------------
 
-TARGET = test
+TARGET = plotAndTable
 
 compile: $(TARGET).$(ExeSuf)
 

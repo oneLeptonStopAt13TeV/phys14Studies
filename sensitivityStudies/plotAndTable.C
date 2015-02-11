@@ -28,8 +28,9 @@ int main (int argc, char *argv[])
      s.AddVariable("numberOfBTaggedJets",      "# of b-tagged jets",     "",        4,0,3,    &(myEvent.numberOfBTaggedJets),      "logY");
      s.AddVariable("leadingLeptonPt",          "lead. lepton p_{T}",     "GeV",  20,0,500,    &(myEvent.leadingLeptonPt),          "");
      s.AddVariable("leadingJetPt",             "lead. jet p_{T}",        "GeV",  20,0,500,    &(myEvent.jetsPt[0]),                "");
-     s.AddVariable("MET",                      "E_{T}^{miss}",           "GeV", 16,50,530,    &(myEvent.MET),                      "logY");
+     s.AddVariable("ETmiss",                   "E_{T}^{miss}",           "GeV", 16,50,530,    &(myEvent.ETmiss),                   "logY");
      s.AddVariable("MT",                       "M_{T}",                  "GeV",  20,0,400,    &(myEvent.MT),                       "logY");
+     s.AddVariable("MT2W",                     "M_{T2}^W",               "GeV",  20,0,400,    &(myEvent.MT2W),                     "");
 
      // #########################################################
      // ##   Create ProcessClasses (and associated datasets)   ##
@@ -56,13 +57,27 @@ int main (int argc, char *argv[])
      // ##    Create Regions    ##
      // ##########################
 
-     vector<Cut> oneLeptonThreeJetsOneB = { Cut("numberOfSelectedLeptons", '=', 1 ), Cut("numberOfSelectedJets", '>', 2), Cut("numberOfBTaggedJets", '>', 0) } ;
-     vector<Cut> MET50 = { Cut("MET", '>', 50) };
-     vector<Cut> MT120 = { Cut("MT",  '>', 120) };
+     vector<Cut> preselection = {
+                                  Cut("numberOfSelectedLeptons", '=', 1 ),
+                                  Cut("numberOfSelectedJets",    '>', 3 ),
+                                  Cut("numberOfBTaggedJets",     '>', 0 ),
+                                  Cut("ETmiss",                     '>', 50)
+                                };
 
-     s.AddRegion("oneLeptonThreeJetsOneB",           "1 lepton, #geq 3 jets, #geq 1 b-tag",                                                               oneLeptonThreeJetsOneB);
-     s.AddRegion("oneLeptonThreeJetsOneBMET50",      "1 lepton, #geq 3 jets, #geq 1 b-tag;E_{T}^{miss} > 50",              "oneLeptonThreeJetsOneB",      MET50);
-     s.AddRegion("oneLeptonThreeJetsOneBMET50MT120", "1 lepton, #geq 3 jets, #geq 1 b-tag;E_{T}^{miss} > 50, M_{T} > 100", "oneLeptonThreeJetsOneBMET50", MT120);
+     vector<Cut> MTtail       = {
+                                    Cut("MT",  '>', 120)
+                                };
+
+     vector<Cut> signalRegion = {
+                                  Cut("ETmiss",  '>', 300),
+                                  Cut("MT2W",    '>', 180)
+                                };
+
+     s.AddRegion("preselection",       "preselection",                                      preselection);
+     s.AddRegion("preselectionMTtail", "preselection + M_{T} > 120", "preselection",        MTtail);
+     s.AddRegion("signalRegion",       "signalRegion",               "preselectionMTtail",  signalRegion);
+
+
 
      // ##########################
      // ##   Create Channels    ##
@@ -162,7 +177,7 @@ int main (int argc, char *argv[])
   // ##   Post-plotting tests   ##
   // #############################
 
-  vector<string> regionsForTable  = { "oneLeptonThreeJetsOneB", "oneLeptonThreeJetsOneBMET50", "oneLeptonThreeJetsOneBMET50MT120" };
+  vector<string> regionsForTable  = { "preselection", "preselectionMTtail", "signalRegion" };
   TableBackgroundSignal(&s,regionsForTable,"singleLepton").Print("yieldTable.tab",2);
 
   printBoxedMessage("Program done.");

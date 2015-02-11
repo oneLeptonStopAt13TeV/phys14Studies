@@ -1,5 +1,5 @@
 
-#define FOLDER_BABYTUPLES "../store/babyTuples/"
+#define FOLDER_BABYTUPLES "../../store/babyTuples/"
 
 typedef struct
 {
@@ -23,9 +23,10 @@ typedef struct
     float jetsCSV[6];
     float jetsCSVv2[6];
     float jetsPUid[6];
-    float MET;
-    float METPhi;
+    float ETmiss;
+    float ETmissPhi;
     float MT;
+    float MT2W;
 
 } babyEvent;
 
@@ -53,7 +54,8 @@ void InitializeBranchesForReading(TTree* theTree, babyEvent* event)
     theTree->SetBranchAddress("jetsCSV"                ,  &(event->jetsCSV                ));
     theTree->SetBranchAddress("jetsCSVv2"              ,  &(event->jetsCSVv2              ));
     theTree->SetBranchAddress("jetsPUid"               ,  &(event->jetsPUid               ));
-    theTree->SetBranchAddress("MET"                    ,  &(event->MET                    ));
-    theTree->SetBranchAddress("METPhi"                 ,  &(event->METPhi                 ));
+    theTree->SetBranchAddress("ETmiss"                 ,  &(event->ETmiss                 ));
+    theTree->SetBranchAddress("ETmissPhi"              ,  &(event->ETmissPhi              ));
     theTree->SetBranchAddress("MT"                     ,  &(event->MT                     ));
+    theTree->SetBranchAddress("MT2W"                   ,  &(event->MT2W                   ));
 }

@@ -22,7 +22,10 @@
 *.a
 *.lib
 
+# Stuff
+*.png
+*.tab
+*.root
+
 # Executables
-*.exe
-*.out
-*.app
+*.run
