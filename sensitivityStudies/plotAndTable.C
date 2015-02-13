@@ -36,7 +36,7 @@ int main (int argc, char *argv[])
      // ##   Create ProcessClasses (and associated datasets)   ##
      // #########################################################
 
-     s.AddProcessClass("SMtop", "SM top",                             "background", kRed-7);
+     s.AddProcessClass("SMtop",    "ttbar",                             "background", kRed-7);
             s.AddDataset("ttbar",                "SMtop",  245000, 800);
             //s.AddDataset("singleT-s",            "top",  0, 0);
             //s.AddDataset("singleT-t",            "top",  0, 0);
@@ -46,12 +46,15 @@ int main (int argc, char *argv[])
      s.AddProcessClass("W+jets",   "W+jets",                          "background", kOrange-2);
              s.AddDataset("Wjets",    "W+jets", 238000, 61500);
 
-     s.AddProcessClass("rare",   "rare",                              "background", kMagenta-5);
-             s.AddDataset("ttW",   "rare", 178000, 0.700);
-             s.AddDataset("ttZ",   "rare", 115000, 0.620);
+     s.AddProcessClass("ttV",     "ttV",                              "background", kMagenta-5);
+             s.AddDataset("ttW",   "ttV", 178000, 0.700);
+             s.AddDataset("ttZ",   "ttV", 115000, 0.620);
 
      s.AddProcessClass("T2tt_850_100",   "T2tt (850/100)",            "signal",     kSpring-1);
              s.AddDataset("T2tt_850_100",   "T2tt_850_100", 102000, 0.019);
+
+     s.AddProcessClass("T2tt_650_325",   "T2tt (650/325)",            "signal",     kAzure-2);
+             s.AddDataset("T2tt_650_325",   "T2tt_650_325", 105000, 0.107);
 
      // ##########################
      // ##    Create Regions    ##
@@ -59,25 +62,36 @@ int main (int argc, char *argv[])
 
      vector<Cut> preselection = {
                                   Cut("numberOfSelectedLeptons", '=', 1 ),
+                                  Cut("leadingLeptonPt",         '>', 30),
                                   Cut("numberOfSelectedJets",    '>', 3 ),
                                   Cut("numberOfBTaggedJets",     '>', 0 ),
-                                  Cut("ETmiss",                     '>', 50)
+                                  Cut("ETmiss",                  '>', 50)
                                 };
 
      vector<Cut> MTtail       = {
-                                    Cut("MT",  '>', 120)
+                                  Cut("MT",  '>', 120)
                                 };
 
-     vector<Cut> signalRegion = {
-                                  Cut("ETmiss",  '>', 300),
+     vector<Cut> signalRegion1 = {
+                                  Cut("ETmiss",  '>', 250),
                                   Cut("MT2W",    '>', 180)
-                                };
+                                 };
+
+     vector<Cut> signalRegion2 = {
+                                   Cut("ETmiss",  '>', 300),
+                                   Cut("MT2W",    '>', 190)
+                                 };
+
+     vector<Cut> signalRegion3 = {
+                                   Cut("ETmiss",  '>', 350),
+                                   Cut("MT2W",    '>', 200)
+                                 };
 
      s.AddRegion("preselection",       "preselection",                                      preselection);
      s.AddRegion("preselectionMTtail", "preselection + M_{T} > 120", "preselection",        MTtail);
-     s.AddRegion("signalRegion",       "signalRegion",               "preselectionMTtail",  signalRegion);
-
-
+     s.AddRegion("signalRegion1",      "signalRegion1",              "preselectionMTtail",  signalRegion1);
+     s.AddRegion("signalRegion2",      "signalRegion2",              "preselectionMTtail",  signalRegion2);
+     s.AddRegion("signalRegion3",      "signalRegion3",              "preselectionMTtail",  signalRegion3);
 
      // ##########################
      // ##   Create Channels    ##
@@ -99,9 +113,9 @@ int main (int argc, char *argv[])
 
      // Config plots
 
-     s.SetGlobalBoolOption  ("1DSuperimposed",    "includeSignal",          true   );
-     s.SetGlobalStringOption("1DStack",           "includeSignal",          "stack");
-     s.SetGlobalFloatOption ("1DStack",           "factorSignal",           1.0    );
+     s.SetGlobalBoolOption  ("1DSuperimposed",    "includeSignal",          true          );
+     s.SetGlobalStringOption("1DStack",           "includeSignal",          "superimposed");
+     s.SetGlobalFloatOption ("1DStack",           "factorSignal",           1000.0        );
 
      s.SetLumi(1000);
 
@@ -177,8 +191,9 @@ int main (int argc, char *argv[])
   // ##   Post-plotting tests   ##
   // #############################
 
-  vector<string> regionsForTable  = { "preselection", "preselectionMTtail", "signalRegion" };
+  vector<string> regionsForTable  = { "preselection", "preselectionMTtail", "signalRegion1", "signalRegion2", "signalRegion3" };
   TableBackgroundSignal(&s,regionsForTable,"singleLepton").Print("yieldTable.tab",2);
+  TableBackgroundSignal(&s,regionsForTable,"singleLepton").PrintLatex("yieldTable.tex",0);
 
   printBoxedMessage("Program done.");
   return (0);
