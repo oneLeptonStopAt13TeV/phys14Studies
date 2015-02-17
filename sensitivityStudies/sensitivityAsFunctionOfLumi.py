@@ -31,7 +31,10 @@ for line in open("yieldTable.tab"):
 
     if (columns[1] == "totalSM") :
         B        = float(figure[0])
-        B_uncert = float(figure[1])
+        #B_uncert = float(figure[1])
+
+        # Setting B_uncert as 50%
+        B_uncert = 0.5*B
 
     if (columns[1] == "T2tt_850_100") :
         S1        = float(figure[0])
