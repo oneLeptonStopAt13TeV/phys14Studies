@@ -26,6 +26,9 @@
 *.png
 *.tab
 *.root
+*.log
+*.tex
+*.pdf
 
 # Executables
 *.run

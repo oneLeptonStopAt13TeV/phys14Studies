@@ -31,49 +31,29 @@ int main (int argc, char *argv[])
      s.AddVariable("ETmiss",                   "E_{T}^{miss}",           "GeV", 16,50,530,    &(myEvent.ETmiss),                   "logY");
      s.AddVariable("MT",                       "M_{T}",                  "GeV",  20,0,400,    &(myEvent.MT),                       "logY");
      s.AddVariable("MT2W",                     "M_{T2}^W",               "GeV",  20,0,400,    &(myEvent.MT2W),                     "");
-     float relIso;
-     s.AddVariable("leadingLeptonIso",         "reliso(lepton)",          "",     30,0,0.3,    &(relIso),                           "logY");
 
      // #########################################################
      // ##   Create ProcessClasses (and associated datasets)   ##
      // #########################################################
 
-     s.AddProcessClass("1ltop",         "1ltop",                    "background", kRed-7);
-            s.AddDataset("ttbar-madgraph",        "1ltop",  0, 0);
-            s.AddDataset("singleTop_s",           "1ltop",  0, 0);
-            s.AddDataset("singleTop_t",           "1ltop",  0, 0);
-            s.AddDataset("singleTopbar_s",        "1ltop",  0, 0);
-            s.AddDataset("singleTopbar_t",        "1ltop",  0, 0);
+     s.AddProcessClass("1ltopMG",         "1ltop (madgraph)",                    "background", kRed-7);
+            s.AddDataset("ttbar-madgraph",        "1ltopMG",  0, 0);
+     s.AddProcessClass("ttbar_2lMG", "t#bar{t} #rightarrow l^{+}l^{-} (madgraph)", "background",kCyan-3);
 
-     s.AddProcessClass("ttbar_2l", "t#bar{t} #rightarrow l^{+}l^{-}", "background",kCyan-3);
-
-     s.AddProcessClass("Wjets",   "W+jets",                          "background", kOrange-2);
-             s.AddDataset("Wjets",    "Wjets", 0, 0);
-
-     s.AddProcessClass("rare",     "rare",                           "background", kMagenta-5);
-             s.AddDataset("ttW",   "rare", 0, 0);
-             s.AddDataset("ttZ",   "rare", 0, 0);
-             s.AddDataset("WZ",    "rare", 0, 0);
-             s.AddDataset("ZZ",    "rare", 0, 0);
-             s.AddDataset("DY",    "rare", 0, 0);
-
-     s.AddProcessClass("T2tt_850_100",   "T2tt (850/100)",            "signal",     kSpring-1);
-             s.AddDataset("T2tt_850_100",   "T2tt_850_100", 0, 0);
-
-     s.AddProcessClass("T2tt_650_325",   "T2tt (650/325)",            "signal",     kAzure-2);
-             s.AddDataset("T2tt_650_325",   "T2tt_650_325", 0, 0);
+     s.AddProcessClass("1ltopPY",         "1ltop (pythia)",                    "background", kRed);
+            s.AddDataset("ttbar-pythia8",        "1ltopPY",  0, 0);
+     s.AddProcessClass("ttbar_2lPY", "t#bar{t} #rightarrow l^{+}l^{-} (pythia)", "background",kCyan);
 
      // ##########################
      // ##    Create Regions    ##
      // ##########################
 
      vector<Cut> preselection = {
-                                  Cut("numberOfSelectedLeptons", '=', 1  ),
-                                  Cut("leadingLeptonPt",         '>', 30 ),
-                                  Cut("numberOfSelectedJets",    '>', 2  ),
-                                  Cut("numberOfBTaggedJets",     '>', 0  ),
-                                  Cut("ETmiss",                  '>', 100),
-                                  Cut("leadingLeptonIso",        '<', 0.1)
+                                  Cut("numberOfSelectedLeptons", '=', 1 ),
+                                  Cut("leadingLeptonPt",         '>', 30),
+                                  Cut("numberOfSelectedJets",    '>', 3 ),
+                                  Cut("numberOfBTaggedJets",     '>', 0 ),
+                                  Cut("ETmiss",                  '>', 50)
                                 };
 
      vector<Cut> MTtail       = {
@@ -100,9 +80,6 @@ int main (int argc, char *argv[])
 
      s.AddRegion("preselection",       "preselection",                                      preselection);
      s.AddRegion("preselectionMTtail", "preselection + M_{T} > 120", "preselection",        MTtail);
-     s.AddRegion("signalRegion1",      "signalRegion1",              "preselectionMTtail",  signalRegion1);
-     s.AddRegion("signalRegion2",      "signalRegion2",              "preselectionMTtail",  signalRegion2);
-     s.AddRegion("signalRegion3",      "signalRegion3",              "preselectionMTtail",  signalRegion3);
 
      // ##########################
      // ##   Create Channels    ##
@@ -120,7 +97,6 @@ int main (int argc, char *argv[])
 
      // Schedule plots
      s.SchedulePlots("1DSuperimposed");
-     s.SchedulePlots("1DStack");
 
      // Config plots
 
@@ -176,13 +152,14 @@ int main (int argc, char *argv[])
           if (i % (nEntries / 50) == 0) printProgressBar(i,nEntries,currentDataset);
 
           string currentProcessClass_ = currentProcessClass;
+          if ((currentDataset == "ttbar-pythia8") && (myEvent.numberOfGeneratedLeptons == 2))
+              currentProcessClass_ = "ttbar_2lPY";
           if ((currentDataset == "ttbar-madgraph") && (myEvent.numberOfGeneratedLeptons == 2))
-              currentProcessClass_ = "ttbar_2l";
+              currentProcessClass_ = "ttbar_2lMG";
 
           // Get the i-th entry
           theTree->GetEntry(i);
 
-          relIso = myEvent.leadingLeptonIso / myEvent.leadingLeptonPt;
           float weight = weightLumi;
 
           s.AutoFillProcessClass(currentProcessClass_,weight);
@@ -210,7 +187,7 @@ int main (int argc, char *argv[])
   // ##   Post-plotting tests   ##
   // #############################
 
-  vector<string> regionsForTable  = { "preselection", "preselectionMTtail", "signalRegion1", "signalRegion2", "signalRegion3" };
+  vector<string> regionsForTable  = { "preselection", "preselectionMTtail" };
   TableBackgroundSignal(&s,regionsForTable,"singleLepton").Print("yieldTable.tab",2);
   TableBackgroundSignal(&s,regionsForTable,"singleLepton").PrintLatex("yieldTable.tex",0);
 

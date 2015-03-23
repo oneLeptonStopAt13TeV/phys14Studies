@@ -34,6 +34,7 @@ LOGS          = $(SOURCES:.$(SrcSuf)=.$(LogSuf))
 #------------------------------------------------------------------------------
 
 TARGET = plotAndTable
+#TARGET = pythiaVsMadgraph
 
 compile: $(TARGET).$(ExeSuf)
 
@@ -41,7 +42,7 @@ run:
 	./$(TARGET).$(ExeSuf) | tee $(TARGET).$(LogSuf)
 
 browse:
-	export PLOTS_TO_BROWSE=`ls plots/*.root`; root -l .browse
+	export PLOTS_TO_BROWSE=`ls plots/*.root`; root -l ~/.browse
 
 clean:
 	@echo "Cleaning..."

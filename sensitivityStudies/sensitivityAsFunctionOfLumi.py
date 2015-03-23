@@ -26,15 +26,15 @@ for line in open("yieldTable.tab"):
     
     if (len(columns) < 4) :
         continue
-    
-    figure = columns[5].split("+/-")
+   
+    figure = columns[6].split("+/-")
 
     if (columns[1] == "totalSM") :
         B        = float(figure[0])
-        #B_uncert = float(figure[1])
+        B_uncert = float(figure[1])
 
         # Setting B_uncert as 50%
-        B_uncert = 0.5*B
+        #B_uncert = 0.5*B
 
     if (columns[1] == "T2tt_850_100") :
         S1        = float(figure[0])
@@ -57,33 +57,43 @@ def FOM_discovery(s,b) :
     f = 0.5
     return s/sqrt(b+f*f*b*b)
 
-_FOM1_disco             = FOM_discovery(S1,B) 
-_FOM1_disco_statp1sigma = FOM_discovery(S1,B+B_uncert) 
-_FOM1_disco_statm1sigma = FOM_discovery(S1,B-B_uncert) 
-_FOM2_disco             = FOM_discovery(S2,B) 
-_FOM2_disco_statp1sigma = FOM_discovery(S2,B+B_uncert) 
-_FOM2_disco_statm1sigma = FOM_discovery(S2,B-B_uncert) 
+def excludedSignalStrength(s,b) :
+    f = 0.5
+    return s/sqrt(s+b+f*f*b*b)
+    #mu = 2 * (1 + sqrt(1 + b + f*f*b*b)) / s
+    return mu
 
-lumi = range(0,30)
+def discoveredSignalStrength(s,b) :
+    f = 0.5
+    return s/sqrt(b+f*f*b*b)
+    #mu = 3 * sqrt(b + f*f*b*b) / s
+    return mu
 
-FOM1_disco             = []
-FOM1_disco_statp1sigma = []
-FOM1_disco_statm1sigma = []
-FOM2_disco             = []
-FOM2_disco_statp1sigma = []
-FOM2_disco_statm1sigma = []
+
+mu1_disco = [] 
+mu1_exclu = []
+mu2_disco = []
+mu2_exclu = []
+
+lumi = range(1,30)
 
 for l in lumi :
-    FOM1_disco            .append(sqrt(l) * _FOM1_disco            )
-    FOM1_disco_statp1sigma.append(sqrt(l) * _FOM1_disco_statp1sigma)
-    FOM1_disco_statm1sigma.append(sqrt(l) * _FOM1_disco_statm1sigma) 
-    FOM2_disco            .append(sqrt(l) * _FOM2_disco            )
-    FOM2_disco_statp1sigma.append(sqrt(l) * _FOM2_disco_statp1sigma)
-    FOM2_disco_statm1sigma.append(sqrt(l) * _FOM2_disco_statm1sigma) 
+    S1_ = S1 * l 
+    S2_ = S2 * l
+    B_  = B  * l
+
+    print S1_, B_, discoveredSignalStrength(S1_,B_)
+
+    mu1_disco.append(discoveredSignalStrength(S1_,B_))
+    mu1_exclu.append(excludedSignalStrength(S1_,B_)) 
+    mu2_disco.append(discoveredSignalStrength(S2_,B_))
+    mu2_exclu.append(excludedSignalStrength(S2_,B_)) 
 
 ###############
 #  Make plot  #
 ###############
+
+print mu1_disco
 
 plotting.figure()
 
@@ -91,10 +101,10 @@ plotting.xlabel("Lumi [fb-1]", fontsize = 16)
 plotting.ylabel("Discovery sensitivity [sigma]", fontsize = 16)
 plotting.grid()
 
-plotting.plot(lumi, FOM1_disco, 'r-', linewidth=1.5, color="blue", label="T2tt (850/100)")
-plotting.fill_between(lumi, FOM1_disco_statp1sigma, FOM1_disco_statm1sigma, alpha = 0.1, facecolor = "blue")
-plotting.plot(lumi, FOM2_disco, 'r-', linewidth=1.5, color="orange", label="T2tt (650/325)")
-plotting.fill_between(lumi, FOM2_disco_statp1sigma, FOM2_disco_statm1sigma, alpha = 0.1, facecolor = "orange")
+plotting.plot(lumi, mu1_disco, 'r--', linewidth=1.5, color="blue",   label=r"T2tt (850/100) (3\sigma disco)")
+plotting.plot(lumi, mu1_exclu, 'r-',  linewidth=1.5, color="blue",   label=r"T2tt (850/100) (2\sigma exclu)")
+plotting.plot(lumi, mu2_disco, 'r--', linewidth=1.5, color="orange", label=r"T2tt (650/325) (3\sigma disco)")
+plotting.plot(lumi, mu2_exclu, 'r-',  linewidth=1.5, color="orange", label=r"T2tt (650/325) (2\sigma exclu)")
 
 plotting.legend(loc="upper left", fancybox=True)
 

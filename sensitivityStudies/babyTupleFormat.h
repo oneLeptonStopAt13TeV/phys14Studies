@@ -28,34 +28,42 @@ typedef struct
     float MT;
     float MT2W;
 
+    int   numberOfGeneratedLeptons;
+    float crossSection;
+    int   totalNumberOfInitialEvent;
+
 } babyEvent;
 
 babyEvent myEvent;
 
 void InitializeBranchesForReading(TTree* theTree, babyEvent* event)
 {
-    theTree->SetBranchAddress("eventId"                ,  &(event->eventId                ));
-    theTree->SetBranchAddress("numberOfSelectedLeptons",  &(event->numberOfSelectedLeptons));
-    theTree->SetBranchAddress("leadingLeptonId"        ,  &(event->leadingLeptonId        ));
-    theTree->SetBranchAddress("leadingLeptonPt"        ,  &(event->leadingLeptonPt        ));
-    theTree->SetBranchAddress("leadingLeptonPhi"       ,  &(event->leadingLeptonPhi       ));
-    theTree->SetBranchAddress("leadingLeptonEta"       ,  &(event->leadingLeptonEta       ));
-    theTree->SetBranchAddress("leadingLeptonIso"       ,  &(event->leadingLeptonIso       ));
-    theTree->SetBranchAddress("secondLeptonId"         ,  &(event->secondLeptonId         ));
-    theTree->SetBranchAddress("secondLeptonPt"         ,  &(event->secondLeptonPt         ));
-    theTree->SetBranchAddress("secondLeptonPhi"        ,  &(event->secondLeptonPhi        ));
-    theTree->SetBranchAddress("secondLeptonEta"        ,  &(event->secondLeptonEta        ));
-    theTree->SetBranchAddress("secondLeptonIso"        ,  &(event->secondLeptonIso        ));
-    theTree->SetBranchAddress("numberOfSelectedJets"   ,  &(event->numberOfSelectedJets   ));
-    theTree->SetBranchAddress("numberOfBTaggedJets"    ,  &(event->numberOfBTaggedJets    ));
-    theTree->SetBranchAddress("jetsPt"                 ,  &(event->jetsPt                 ));
-    theTree->SetBranchAddress("jetsPhi"                ,  &(event->jetsPhi                ));
-    theTree->SetBranchAddress("jetsEta"                ,  &(event->jetsEta                ));
-    theTree->SetBranchAddress("jetsCSV"                ,  &(event->jetsCSV                ));
-    theTree->SetBranchAddress("jetsCSVv2"              ,  &(event->jetsCSVv2              ));
-    theTree->SetBranchAddress("jetsPUid"               ,  &(event->jetsPUid               ));
-    theTree->SetBranchAddress("ETmiss"                 ,  &(event->ETmiss                 ));
-    theTree->SetBranchAddress("ETmissPhi"              ,  &(event->ETmissPhi              ));
-    theTree->SetBranchAddress("MT"                     ,  &(event->MT                     ));
-    theTree->SetBranchAddress("MT2W"                   ,  &(event->MT2W                   ));
+    theTree->SetBranchAddress("eventId"                  , &(event->eventId                  ));
+    theTree->SetBranchAddress("numberOfSelectedLeptons"  , &(event->numberOfSelectedLeptons  ));
+    theTree->SetBranchAddress("leadingLeptonId"          , &(event->leadingLeptonId          ));
+    theTree->SetBranchAddress("leadingLeptonPt"          , &(event->leadingLeptonPt          ));
+    theTree->SetBranchAddress("leadingLeptonPhi"         , &(event->leadingLeptonPhi         ));
+    theTree->SetBranchAddress("leadingLeptonEta"         , &(event->leadingLeptonEta         ));
+    theTree->SetBranchAddress("leadingLeptonIso"         , &(event->leadingLeptonIso         ));
+    theTree->SetBranchAddress("secondLeptonId"           , &(event->secondLeptonId           ));
+    theTree->SetBranchAddress("secondLeptonPt"           , &(event->secondLeptonPt           ));
+    theTree->SetBranchAddress("secondLeptonPhi"          , &(event->secondLeptonPhi          ));
+    theTree->SetBranchAddress("secondLeptonEta"          , &(event->secondLeptonEta          ));
+    theTree->SetBranchAddress("secondLeptonIso"          , &(event->secondLeptonIso          ));
+    theTree->SetBranchAddress("numberOfSelectedJets"     , &(event->numberOfSelectedJets     ));
+    theTree->SetBranchAddress("numberOfBTaggedJets"      , &(event->numberOfBTaggedJets      ));
+    theTree->SetBranchAddress("jetsPt"                   , &(event->jetsPt                   ));
+    theTree->SetBranchAddress("jetsPhi"                  , &(event->jetsPhi                  ));
+    theTree->SetBranchAddress("jetsEta"                  , &(event->jetsEta                  ));
+    theTree->SetBranchAddress("jetsCSV"                  , &(event->jetsCSV                  ));
+    theTree->SetBranchAddress("jetsCSVv2"                , &(event->jetsCSVv2                ));
+    theTree->SetBranchAddress("jetsPUid"                 , &(event->jetsPUid                 ));
+    theTree->SetBranchAddress("ETmiss"                   , &(event->ETmiss                   ));
+    theTree->SetBranchAddress("ETmissPhi"                , &(event->ETmissPhi                ));
+    theTree->SetBranchAddress("MT"                       , &(event->MT                       ));
+    theTree->SetBranchAddress("MT2W"                     , &(event->MT2W                     ));
+
+    theTree->SetBranchAddress("numberOfGeneratedLeptons" , &(event->numberOfGeneratedLeptons ));
+    theTree->SetBranchAddress("crossSection"             , &(event->crossSection             ));
+    theTree->SetBranchAddress("totalNumberOfInitialEvent", &(event->totalNumberOfInitialEvent));
 }
