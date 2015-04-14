@@ -4,8 +4,8 @@ Install
 Setup a CMS release somewhere (to have ROOT, python)
 
 ```
-cmsrel CMSSW_7_0_0
-cd CMSSW_7_0_0/src && cmsenv && cd ../../
+cmsrel CMSSW_7_3_0
+cd CMSSW_7_3_0/src && cmsenv && cd ../../
 ```
 
 Setup PyROOF
@@ -14,7 +14,7 @@ Setup PyROOF
 git clone https://github.com/alexAubin/flatTreeAnalysis PyROOF 
 ```
 
-Install rootpy
+Install rootpy (once for all - if you already did it in the past, shouldnt be needed.)
 
 ```
 git clone git://github.com/rootpy/rootpy.git
@@ -33,7 +33,13 @@ git clone https://github.com/oneLeptonStopAt13TeV/phys14Studies.git
 Link phys14Selection in PyROOF
 
 ```
-cd PyROOF/analysis && ln -s ../../phys14Selection && cd ../../
+cd PyROOF/analysis && ln -s ../../phys14Selection stopPhys14 && cd ../../
+```
+
+Compile MT2W C++ implementation
+
+```
+cd phys14Selection/inputs/MT2W/ && make && cd ../../..
 ```
 
 Link store location
