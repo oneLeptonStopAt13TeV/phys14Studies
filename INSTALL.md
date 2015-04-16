@@ -93,9 +93,9 @@ cd PyROOF
 ./PyROOF.py --debug
 ```
 
-Check that you're happy with the configuration for multiprocessing (number of workers, output directory) in `config/localMultiprocessing.py`. Then launch the beast (in a screen session maybe) :
+Note : if it runs on DPM-located datasets, you will need an active proxy
 
-```
-./PyROOF.py --local
-```
+If you're okay and want to run on every datasets :
+- check that you're happy with the configuration for multiprocessing (number of workers, output directory) in `config/localMultiprocessing.py`. 
+- Then launch the beast (in a screen session maybe) with `./PyROOF.py --local` or simply `./PyROOF.py -l`
 
