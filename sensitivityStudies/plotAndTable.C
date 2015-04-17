@@ -26,11 +26,11 @@ int main (int argc, char *argv[])
      s.AddVariable("numberOfSelectedLeptons",  "# of selected leptons",  "",        4,0,3,    &(myEvent.numberOfSelectedLeptons),  "");
      s.AddVariable("numberOfSelectedJets",     "# of selected jets",     "",        6,3,8,    &(myEvent.numberOfSelectedJets),     "logY");
      s.AddVariable("numberOfBTaggedJets",      "# of b-tagged jets",     "",        4,0,3,    &(myEvent.numberOfBTaggedJets),      "logY");
-     s.AddVariable("leadingLeptonPt",          "lead. lepton p_{T}",     "GeV",  20,0,500,    &(myEvent.leadingLeptonPt),          "");
+     s.AddVariable("leadingLeptonPt",          "lead. lepton p_{T}",     "GeV",  20,0,500,    &(myEvent.leadingLeptonPt),          "logY");
      s.AddVariable("leadingJetPt",             "lead. jet p_{T}",        "GeV",  20,0,500,    &(myEvent.jetsPt[0]),                "");
-     s.AddVariable("ETmiss",                   "E_{T}^{miss}",           "GeV", 16,50,530,    &(myEvent.ETmiss),                   "logY");
+     s.AddVariable("ETmiss",                   "E_{T}^{miss}",           "GeV", 20,100,500,   &(myEvent.ETmiss),                   "logY");
      s.AddVariable("MT",                       "M_{T}",                  "GeV",  20,0,400,    &(myEvent.MT),                       "logY");
-     s.AddVariable("MT2W",                     "M_{T2}^W",               "GeV",  20,0,400,    &(myEvent.MT2W),                     "");
+     s.AddVariable("MT2W",                     "M_{T2}^{W}",             "GeV",  20,0,400,    &(myEvent.MT2W),                     "");
      float relIso;
      s.AddVariable("leadingLeptonIso",         "reliso(lepton)",          "",     30,0,0.3,    &(relIso),                           "logY");
 
@@ -70,10 +70,9 @@ int main (int argc, char *argv[])
      vector<Cut> preselection = {
                                   Cut("numberOfSelectedLeptons", '=', 1  ),
                                   Cut("leadingLeptonPt",         '>', 30 ),
-                                  Cut("numberOfSelectedJets",    '>', 2  ),
+                                  Cut("numberOfSelectedJets",    '>', 3  ),
                                   Cut("numberOfBTaggedJets",     '>', 0  ),
                                   Cut("ETmiss",                  '>', 100),
-                                  Cut("leadingLeptonIso",        '<', 0.1)
                                 };
 
      vector<Cut> MTtail       = {
@@ -98,11 +97,13 @@ int main (int argc, char *argv[])
                                    Cut("MT2W",   '>', 200)
                                  };
 
-     s.AddRegion("preselection",       "preselection",                                      preselection);
-     s.AddRegion("preselectionMTtail", "preselection + M_{T} > 120", "preselection",        MTtail);
-     s.AddRegion("signalRegion1",      "signalRegion1",              "preselectionMTtail",  signalRegion1);
-     s.AddRegion("signalRegion2",      "signalRegion2",              "preselectionMTtail",  signalRegion2);
-     s.AddRegion("signalRegion3",      "signalRegion3",              "preselectionMTtail",  signalRegion3);
+     s.AddRegion("preselection",          "Preselection",                                         preselection);
+
+        s.AddRegion("preselectionMTtail", "Preselection + M_{T} > 120",    "preselection",        MTtail);
+
+            s.AddRegion("signalRegion1",  "Signal region #1",              "preselectionMTtail",  signalRegion1);
+            s.AddRegion("signalRegion2",  "Signal region #2",              "preselectionMTtail",  signalRegion2);
+            s.AddRegion("signalRegion3",  "Signal region #3",              "preselectionMTtail",  signalRegion3);
 
      // ##########################
      // ##   Create Channels    ##
@@ -175,12 +176,12 @@ int main (int argc, char *argv[])
       {
           if (i % (nEntries / 50) == 0) printProgressBar(i,nEntries,currentDataset);
 
+          // Get the i-th entry
+          theTree->GetEntry(i);
+
           string currentProcessClass_ = currentProcessClass;
           if ((currentDataset == "ttbar-madgraph") && (myEvent.numberOfGeneratedLeptons == 2))
               currentProcessClass_ = "ttbar_2l";
-
-          // Get the i-th entry
-          theTree->GetEntry(i);
 
           relIso = myEvent.leadingLeptonIso / myEvent.leadingLeptonPt;
           float weight = weightLumi;
