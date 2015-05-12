@@ -33,7 +33,7 @@ PyROOF
 ------
 
 ```
-git clone https://github.com/oneLeptonStopAt13TeV/PyROOF 
+git clone https://github.com/IPHC/PyROOF 
 ```
 
 SonicScrewdriver
