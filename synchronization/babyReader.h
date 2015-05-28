@@ -53,6 +53,10 @@ typedef struct
     int   runId;
     float secondLeptonPhi;
     float secondLeptonEta;
+    float pv_ndof;
+    float pv_z;
+    float pv_rho;
+    int    pv_isFake;
 
     // Intermediate pointers for special types
     // Yes, this shit is needed because ROOT is crap.
@@ -97,6 +101,10 @@ void InitializeBranchesForReading(TTree* theTree, babyEvent* myEvent)
     theTree->SetBranchAddress("runId",                   &(myEvent->runId));
     theTree->SetBranchAddress("secondLeptonPhi",         &(myEvent->secondLeptonPhi));
     theTree->SetBranchAddress("secondLeptonEta",         &(myEvent->secondLeptonEta));
+    theTree->SetBranchAddress("pv_ndof",         &(myEvent->pv_ndof));
+    theTree->SetBranchAddress("pv_z",            &(myEvent->pv_z));
+    theTree->SetBranchAddress("pv_rho",          &(myEvent->pv_rho));
+    theTree->SetBranchAddress("pv_isFake",       &(myEvent->pv_isFake));
 }
 
 // ################################

@@ -46,8 +46,8 @@ int main (int argc, char *argv[])
      // ##   Create ProcessClasses (and associated datasets)   ##
      // #########################################################
 
-     s.AddProcessClass("T2tt_850_100",   "T2tt (850/100)",            "background",     kSpring-1);
-             s.AddDataset("T2tt_850_100",   "T2tt_850_100", 0, 0);
+     //s.AddProcessClass("T2tt_850_100",   "T2tt (850/100)",            "background",     kSpring-1);
+     //        s.AddDataset("T2tt_850_100",   "T2tt_850_100", 0, 0);
 
      s.AddProcessClass("T2tt_650_325",   "T2tt (650/325)",            "background",     kAzure-2);
                s.AddDataset("T2tt_650_325",   "T2tt_650_325", 0, 0);
@@ -147,7 +147,8 @@ int main (int argc, char *argv[])
 
           s.AutoFillProcessClass(currentProcessClass_,weight);
 
-          if ((myEvent.numberOfSelectedLeptons == 1 )
+          if (( myEvent.pv_ndof>4 && !myEvent.pv_isFake && fabs(myEvent.pv_z)<=24 && myEvent.pv_rho<=2)
+	   && (myEvent.numberOfSelectedLeptons == 1 )
            && (myEvent.numberOfSelectedJets    >= 4 )
            && (myEvent.numberOfBTaggedJets     >= 1 )
            && (myEvent.ETmiss                  >= 80))
